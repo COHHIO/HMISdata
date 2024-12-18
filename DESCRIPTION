@@ -13,3 +13,5 @@ RoxygenNote: 7.3.2
 Imports: 
     aws.s3,
     fs
+URL: https://github.com/trevinflick/HMISdata
+BugReports: https://github.com/trevinflick/HMISdata/issues
