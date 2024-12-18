@@ -1,0 +1,2 @@
+ExportID,SourceType,SourceID,SourceName,SourceContactFirst,SourceContactLast,SourceContactPhone,SourceContactExtension,SourceContactEmail,ExportDate,ExportStartDate,ExportEndDate,SoftwareName,SoftwareVersion,CSVVersion,ExportPeriodType,ExportDirective,HashStatus,ImplementationID
+"42412",1,"Defaul","https://cohhio.clarityhs.com","Admin","Admin",,,"admin@bitfocus.com",2024-12-16 22:02:02,2022-01-01,2024-12-17,"Clarity Human Services","1.0","2024 v1.4",3,2,1,"200"
