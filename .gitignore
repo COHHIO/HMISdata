@@ -4,14 +4,4 @@
 .httr-oauth
 .DS_Store
 .quarto
-inst/extdata/export/*
-inst/extdata/export/AssessmentQuestions.csv
-inst/extdata/export/Disabilities.csv
-inst/extdata/export/AssessmentResults.csv
-inst/extdata/export/Client.csv
-inst/extdata/export/CurrentLivingSituation.csv
-inst/extdata/export/EmploymentEducation.csv
-inst/extdata/export/Enrollment.csv
-inst/extdata/export/Exit.csv
-inst/extdata/export/HealthAndDV.csv
-inst/extdata/export/IncomeBenefits.csv
+data/hmis/*
