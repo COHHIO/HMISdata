@@ -10,65 +10,63 @@
 #' @export
 load_hud_export <- function(
     bucket = "hud.csv-daily",
+    prefix = "HMIS",
+    region = "us-east-2",
     s3_key = NULL,
-    extract_path = file.path("inst", "extdata", "export"),
+    extract_path = fs::path("data", "hmis"),
     delete_archive = TRUE,
     delete_s3_object = FALSE,
     moment = Sys.Date()
 ) {
-  # If no s3_key provided, find the latest HUD export
-  if (is.null(s3_key)) {
-    s3_key <- tryCatch({
-      find_latest_hud_export(bucket)
-    }, error = function(e) {
-      warning("Could not find HUD export in bucket: ", e$message)
-      return(NULL)
-    })
 
-    # If no key found, return FALSE
-    if (is.null(s3_key)) {
-      return(FALSE)
-    }
-  }
-
-  # Ensure local directories exist using fs
-  fs::dir_create(extract_path)
-
-  # Generate a consistent filename
-  local_filename <- file.path(
-    paste0("hud_export_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".zip")
-  )
-
-  # Download from S3
   tryCatch({
-    # Attempt to download the file
-    aws.s3::save_object(
-      object = s3_key$Contents$Key,
-      bucket = bucket,
-      file = local_filename
-    )
-    # If download successful, use existing extraction function
-    extraction_result <- hud_export_extract()
+    # Find latest export
+    cli::cli_alert_info("Finding latest HUD export...")
+    s3_key <- find_latest_hud_export(bucket, prefix, region)
 
-    # Delete S3 object if requested and extraction was successful
-    if (delete_s3_object && extraction_result) {
+    # Generate local filename
+    local_file <- fs::path(
+      fs::path_temp(),
+      paste0("hud_export_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".zip")
+    )
+
+    # Download file
+    cli::cli_alert_info("Downloading from S3...")
+    aws.s3::save_object(
+      object = s3_key,  # Now using just the key string
+      bucket = bucket,
+      file = local_file
+    )
+
+    # Extract files
+    cli::cli_alert_info("Extracting files...")
+    success <- extract_hud_export(
+      archive_path = local_file,
+      extract_path = extract_path,
+      delete_archive = delete_archive
+    )
+
+    if (!success) {
+      stop("Extraction failed")
+    }
+
+    # Clean up S3 if requested
+    if (delete_s3_object) {
+      cli::cli_alert_info("Cleaning up S3 object...")
       aws.s3::delete_object(
-        object = s3_key,
+        object = s3_key,  # Now using just the key string
         bucket = bucket
       )
     }
 
-    # Return extraction result
-    return(extraction_result)
+    # Load extracted files
+    cli::cli_alert_success("Loading data...")
+    files <- fs::dir_ls(extract_path, glob = "*.csv")
+    data <- lapply(files, read.csv)
+    names(data) <- tools::file_path_sans_ext(basename(files))
 
   }, error = function(e) {
-    # Simplified error handling
-    warning("S3 Download failed: ", e$message)
-    return(FALSE)
-  }, finally = {
-    # Clean up temporary files if they exist and weren't already deleted
-    if (delete_archive && file.exists(local_filename)) {
-      file.remove(local_filename)
-    }
+    cli::cli_alert_error("Error: {e$message}")
+    NULL
   })
 }
