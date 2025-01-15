@@ -1,16 +1,47 @@
-# Find the most recent HUD export file
-find_latest_hud_export <- function(bucket, prefix = prefix, region = region) {
-  # List objects in the bucket
-  objects <- aws.s3::get_bucket(bucket = "hud.csv-daily", prefix = "HMIS",
-                                region = "us-east-2")
+#' Find the Most Recent HUD Export in S3
+#'
+#' @param bucket Character. Name of the S3 bucket (default: "hud.csv-daily")
+#' @param prefix Character. Prefix to filter S3 objects (default: "HMIS")
+#' @param region Character. AWS region (default: "us-east-2")
+#' @return List containing the key and metadata of the most recent export
+#' @keywords internal
+find_latest_hud_export <- function(bucket = "hud.csv-daily",
+                                   prefix = "HMIS",
+                                   region = "us-east-2") {
+  tryCatch({
+    # List objects in the bucket
+    objects <- aws.s3::get_bucket(
+      bucket = bucket,
+      prefix = prefix,
+      region = region
+    )
 
-  # Filter for HUD export files (adjust pattern as needed)
-  hud_exports <- objects[grep("cohhio.*\\.zip$", sapply(objects, "[[", "Key"))]
+    # Filter for HUD export files and extract keys
+    hud_files <- objects[grep("cohhio.*\\.zip$", sapply(objects, "[[", "Key"))]
 
-  # Sort by last modified time and get the most recent
-  ## TO DO - get latest zip file
+    if (length(hud_files) == 0) {
+      stop("No HUD export files found in bucket")
+    }
 
-  return(hud_exports)
+    # Extract modification times and convert to POSIXct
+    mod_times <- lapply(hud_files, function(x) {
+      as.POSIXct(x$LastModified, format = "%Y-%m-%dT%H:%M:%S", tz = "GMT")
+    })
+
+    # Find the most recent file
+    latest_index <- which.max(unlist(mod_times))
+    latest_file <- hud_files[[latest_index]]
+
+    if (is.null(latest_file)) {
+      stop("Could not determine latest file")
+    }
+
+    # Return the key of the most recent file
+    latest_file$Key
+
+  }, error = function(e) {
+    stop("Error finding latest HUD export: ", e$message)
+  })
 }
 
 # Get the location of the downloads folder
@@ -19,6 +50,8 @@ os_download_folder <- function() {
          Windows = "~/../Downloads",
          Darwin = "~/Downloads")
 }
+
+
 
 #' @title Extract a previously downloaded HUD Export archive
 #'
