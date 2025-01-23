@@ -59,40 +59,39 @@ extract_hud_export <- function(archive_path,
                                delete_archive = TRUE,
                                moment = Sys.Date(),
                                wait = lubridate::minutes(2)) {
-
   tryCatch({
     # Create extraction directory if it doesn't exist
     fs::dir_create(extract_path)
-
     # Verify archive exists
     if (!fs::file_exists(archive_path)) {
       stop("Archive file not found: ", archive_path)
     }
-
     # Get archive metadata
     zip_contents <- utils::unzip(archive_path, list = TRUE)
     newest_file_date <- max(as.POSIXct(zip_contents$Date))
 
     # Check if files need updating
+    needs_update <- TRUE
     existing_files <- fs::dir_ls(extract_path, type = "file")
     if (length(existing_files) > 0) {
       existing_newest <- max(fs::file_info(existing_files)$modification_time)
       if (existing_newest >= newest_file_date) {
         cli::cli_inform("Extracted files are up to date")
-        return(TRUE)
+        needs_update <- FALSE
       }
     }
 
-    # Extract files
-    utils::unzip(archive_path, exdir = extract_path)
+    # Extract files if needed
+    if (needs_update) {
+      utils::unzip(archive_path, exdir = extract_path)
+    }
 
-    # Clean up if requested
+    # Clean up if requested (do this regardless of whether files needed updating)
     if (delete_archive) {
       fs::file_delete(archive_path)
     }
 
     TRUE
-
   }, error = function(e) {
     cli::cli_alert_error("Extraction failed: {e$message}")
     FALSE
