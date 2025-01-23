@@ -16,3 +16,6 @@ Imports:
     lubridate
 URL: https://github.com/trevinflick/HMISdata
 BugReports: https://github.com/trevinflick/HMISdata/issues
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
