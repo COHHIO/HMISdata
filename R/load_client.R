@@ -23,6 +23,13 @@ load_client <- function(extract_path = fs::path("data", "hmis")) {
 #' @return Redacted Client data
 #' @export
 Client_redact <- function(Client, clients_to_filter = NULL) {
+  # Input validation
+  if (is.null(Client)) stop("Input data frame cannot be NULL")
+  if (!is.data.frame(Client)) stop("Input must be a data frame")
+
+  # Handle empty data frame
+  if (nrow(Client) == 0) return(Client)
+
   # Apply client filtering if needed
   if (!is.null(clients_to_filter)) {
     id_cols <- intersect(colnames(Client), c("PersonalID", "UniqueID"))
@@ -37,8 +44,14 @@ Client_redact <- function(Client, clients_to_filter = NULL) {
     }
   }
 
+  # Create safe versions of columns if they don't exist
+  if (!"NameDataQuality" %in% names(Client)) Client$NameDataQuality <- NA
+  if (!"FirstName" %in% names(Client)) Client$FirstName <- NA
+  if (!"SSN" %in% names(Client)) Client$SSN <- NA
+  if (!"SSNDataQuality" %in% names(Client)) Client$SSNDataQuality <- NA
+
   # Apply PII redaction
-  Client |>
+  Client <- Client |>
     dplyr::mutate(
       FirstName = dplyr::case_when(
         NameDataQuality %in% c(8, 9) ~ "DKR",
@@ -48,9 +61,6 @@ Client_redact <- function(Client, clients_to_filter = NULL) {
           FirstName == "Anonymous" ~ "Missing",
         TRUE ~ "ok"
       ),
-      LastName = NULL,
-      MiddleName = NULL,
-      NameSuffix = NULL,
       SSN = dplyr::case_when(
         substr(SSN, 1, 5) == "00000" ~ "Four Digits Provided",
         (is.na(SSN) & !SSNDataQuality %in% c(8, 9)) |
@@ -72,4 +82,10 @@ Client_redact <- function(Client, clients_to_filter = NULL) {
           ) ~ "Invalid",
         TRUE ~ "ok"
       ))
+
+  # Remove PII columns if they exist
+  pii_cols <- c("LastName", "MiddleName", "NameSuffix")
+  Client[pii_cols] <- NULL
+
+  return(Client)
 }
