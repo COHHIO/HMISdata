@@ -1,4 +1,11 @@
-tibble::tribble(
+#' Create Regions dataset for HMISdata package
+#' This script creates the Regions dataset containing Ohio homeless planning regions
+
+# Load required packages
+library(tibble)
+library(usethis)
+
+Regions <- tibble::tribble(
        ~County, ~Region,                   ~RegionName,
     "Mahoning",      0L,         "Mahoning County CoC",
     "Defiance",      1L,  "Homeless Planning Region 1",
