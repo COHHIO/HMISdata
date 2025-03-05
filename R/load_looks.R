@@ -12,12 +12,23 @@ load_looker_data <- function(
     prefix = NULL,
     region = "us-east-2",
     local_path = fs::path("data", "looker"),
-    delete_s3_object = FALSE
+    delete_s3_object = FALSE,
+    filename = NULL
 ) {
   tryCatch({
     # Find latest files for each Look
     cli::cli_alert_info("Finding latest Looker exports...")
     latest_files <- find_latest_looker_files(bucket, prefix, region)
+
+    # Filter only the requested filename (if provided)
+    if (!is.null(filename)) {
+      latest_files <- Filter(function(f) f$look_name == filename, latest_files)
+
+      if (length(latest_files) == 0) {
+        cli::cli_alert_warning("No data found for filename: {filename}")
+        return(NULL)
+      }
+    }
 
     # Create local directory if it doesn't exist
     fs::dir_create(local_path)
@@ -52,6 +63,10 @@ load_looker_data <- function(
       }
     }
 
+    # Return a single data frame if filename was specified, otherwise return the list
+    if (!is.null(filename)) {
+      return(data[[filename]])
+    }
     cli::cli_alert_success("Data loaded successfully")
     return(data)
 
