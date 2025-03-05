@@ -4,7 +4,7 @@
 
 
 # Create  data
-ssvf_data <- tibble::tribble(
+ServiceAreas <- tibble::tribble(
   ~ssvf_service_area, ~county,
   "Lutheran Social Services", "Adams",
   "St. Vincent DePaul", "Allen",
