@@ -4,13 +4,8 @@
 #' @return Processed Client data with redacted PII
 #' @export
 load_client <- function(extract_path = fs::path("data", "hmis")) {
-  client_path <- fs::path(extract_path, "Client.csv")
-  if (!fs::file_exists(client_path)) {
-    stop("Client.csv not found in extract path: ", extract_path)
-  }
-
   # Read and redact - we know it's raw data from CSV
-  Client <- read.csv(client_path) |>
+  Client <- load_hmis_csv("Client.csv") |>
     Client_redact()
 
   return(Client)
