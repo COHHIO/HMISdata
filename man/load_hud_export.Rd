@@ -9,27 +9,31 @@ load_hud_export(
   prefix = "HMIS",
   region = "us-east-2",
   s3_key = NULL,
-  extract_path = fs::path("data", "hmis"),
+  extract_path = NULL,
   delete_archive = TRUE,
   delete_s3_object = FALSE,
-  moment = Sys.Date()
+  cleanup_extract = TRUE
 )
 }
 \arguments{
 \item{bucket}{\code{(character)} Name of the S3 bucket}
 
+\item{prefix}{\code{(character)} Prefix to filter S3 objects}
+
+\item{region}{\code{(character)} AWS region}
+
 \item{s3_key}{\code{(character)} S3 object key (path) for the HUD export zip (optional)}
 
-\item{extract_path}{\code{(character)} Path where the archive will be extracted}
+\item{extract_path}{\code{(character)} Path where the archive will be extracted (NULL for temp directory)}
 
 \item{delete_archive}{\code{(logical)} Whether to delete the downloaded archive after extraction}
 
 \item{delete_s3_object}{\code{(logical)} Whether to delete the object from S3 after download}
 
-\item{moment}{\code{(POSIXct/Date)} Time point to validate archive recency}
+\item{cleanup_extract}{\code{(logical)} Whether to delete extracted files after loading}
 }
 \value{
-\code{(logical)} Success of download and extraction
+\code{(list)} Named list of data frames from the extracted CSV files
 }
 \description{
 Download and Extract HUD Export from S3

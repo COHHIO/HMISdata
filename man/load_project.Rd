@@ -4,12 +4,12 @@
 \alias{load_project}
 \title{Load and Process Project Data}
 \usage{
-load_project(extract_path = fs::path("data", "hmis"), regions = NULL)
+load_project(regions = NULL)
 }
 \arguments{
-\item{extract_path}{Path where the HUD export files are located}
-
 \item{regions}{Optional data frame containing region definitions}
+
+\item{extract_path}{Path where the HUD export files are located}
 }
 \value{
 Processed Project data with CoC information

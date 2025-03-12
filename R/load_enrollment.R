@@ -1,6 +1,4 @@
 #' @title Load Enrollment as Enrollment_extra_Client_Exit_HH_CL_AaE
-#'
-#' @inheritParams data_quality_tables
 #' @param Enrollment_extras From Clarity Looker API Extras
 #'
 #' @export

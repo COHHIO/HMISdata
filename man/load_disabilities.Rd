@@ -4,7 +4,7 @@
 \alias{load_disabilities}
 \title{Load Disabilities Data}
 \usage{
-load_disabilities(extract_path = fs::path("data", "hmis"))
+load_disabilities()
 }
 \arguments{
 \item{extract_path}{Path where the HUD export files are located}
