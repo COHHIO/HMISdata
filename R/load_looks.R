@@ -22,38 +22,36 @@ load_looker_data <- function(
 
     # Filter only the requested filename (if provided)
     if (!is.null(filename)) {
-      latest_files <- Filter(function(f) f$look_name == filename, latest_files)
+      latest_files <- Filter(function(f) {
+        matched <- f$look_name == filename
+        return(matched)
+      }, latest_files)
 
       if (length(latest_files) == 0) {
-        cli::cli_alert_warning("No data found for filename: {filename}")
+        cli::cli_alert_warning("No data found matching: {filename}")
         return(NULL)
       }
     }
 
     # Create local directory if it doesn't exist
     fs::dir_create(local_path)
-
     # Download and load each file
     cli::cli_alert_info("Downloading and loading files...")
     data <- list()
-
     for (file_info in latest_files) {
       # Generate local filename
       local_file <- fs::path(
         local_path,
         paste0(file_info$look_name, "_", format(file_info$last_modified, "%Y%m%d"), ".csv")
       )
-
       # Download file
       aws.s3::save_object(
         object = file_info$key,
         bucket = bucket,
         file = local_file
       )
-
       # Read the CSV
       data[[file_info$look_name]] <- read.csv(local_file)
-
       # Clean up S3 if requested
       if (delete_s3_object) {
         aws.s3::delete_object(
@@ -64,14 +62,15 @@ load_looker_data <- function(
     }
 
     # Return a single data frame if filename was specified, otherwise return the list
-    if (!is.null(filename)) {
-      return(data[[filename]])
+    if (!is.null(filename) && length(data) == 1) {
+      # Return the first (and only) data frame in the list
+      return(data[[1]])
     }
+
     cli::cli_alert_success("Data loaded successfully")
     return(data)
-
   }, error = function(e) {
-    cli::cli_alert_error("Error: {e$message}")
+    cli::cli_abort("Error: {e$message}")
     return(NULL)
   })
 }
