@@ -10,7 +10,8 @@ load_hmis_csv <- function(
     file_name,
     bucket = "hud.csv-daily",
     folder = "hmis_files",
-    region = "us-east-2"
+    region = "us-east-2",
+    col_types = NULL
 ) {
   tryCatch({
     # Construct the full S3 key (path)
@@ -32,8 +33,14 @@ load_hmis_csv <- function(
     )
 
     # Load the CSV file
+
+    # If no column specs provided, use character as default
+    if (is.null(col_types)) {
+      col_types <- readr::cols(.default = readr::col_character())
+    }
+
     cli::cli_alert_info("Loading data...")
-    data <- read.csv(local_file)
+    data <- vroom::vroom(local_file, col_types = col_types)
 
     # Delete the temporary file
     fs::file_delete(local_file)
@@ -42,7 +49,7 @@ load_hmis_csv <- function(
     return(data)
 
   }, error = function(e) {
-    cli::cli_alert_error("Error loading {file_name}: {e$message}")
+    cli::cli_alert_danger("Error loading {file_name}: {e$message}")
     NULL
   })
 }
