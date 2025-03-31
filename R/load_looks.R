@@ -13,7 +13,8 @@ load_looker_data <- function(
     region = "us-east-2",
     local_path = fs::path("data", "looker"),
     delete_s3_object = FALSE,
-    filename = NULL
+    filename = NULL,
+    col_types = NULL
 ) {
   tryCatch({
     # Find latest files for each Look
@@ -50,8 +51,14 @@ load_looker_data <- function(
         bucket = bucket,
         file = local_file
       )
+
+      # If no column specs provided, use character as default
+      if (is.null(col_types)) {
+        col_types <- readr::cols(.default = readr::col_character())
+      }
+
       # Read the CSV
-      data[[file_info$look_name]] <- read.csv(local_file)
+      data[[file_info$look_name]] <- vroom::vroom(local_file, col_types = col_types)
       # Clean up S3 if requested
       if (delete_s3_object) {
         aws.s3::delete_object(
