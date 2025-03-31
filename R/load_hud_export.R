@@ -86,7 +86,7 @@ load_hud_export <- function(
     return(data)
 
   }, error = function(e) {
-    cli::cli_alert_error("Error: {e$message}")
+    cli::cli_alert_danger("Error: {e$message}")
     NULL
   })
 }

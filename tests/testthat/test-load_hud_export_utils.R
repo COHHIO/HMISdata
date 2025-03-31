@@ -98,9 +98,9 @@ test_that("extract_hud_export successfully extracts files", {
 })
 
 test_that("extract_hud_export handles missing archive gracefully", {
-  # Mock cli::cli_alert_error to avoid the export issue
-  mock_alert_error <- mock()
-  stub(extract_hud_export, "cli::cli_alert_error", mock_alert_error)
+  # Mock cli::cli_alert_danger to avoid the export issue
+  mock_alert_danger <- mock()
+  stub(extract_hud_export, "cli::cli_alert_danger", mock_alert_danger)
 
   result <- extract_hud_export(
     archive_path = "nonexistent.zip",

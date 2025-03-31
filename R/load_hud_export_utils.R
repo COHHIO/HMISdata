@@ -93,7 +93,7 @@ extract_hud_export <- function(archive_path,
 
     TRUE
   }, error = function(e) {
-    cli::cli_alert_error("Extraction failed: {e$message}")
+    cli::cli_alert_danger("Extraction failed: {e$message}")
     FALSE
   })
 }
