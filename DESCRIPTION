@@ -13,7 +13,8 @@ Imports:
     aws.s3,
     cli,
     fs,
-    lubridate
+    lubridate,
+    readr
 URL: https://github.com/trevinflick/HMISdata
 BugReports: https://github.com/trevinflick/HMISdata/issues
 Suggests: 
