@@ -8,7 +8,8 @@ load_hmis_csv(
   file_name,
   bucket = "hud.csv-daily",
   folder = "hmis_files",
-  region = "us-east-2"
+  region = "us-east-2",
+  col_types = NULL
 )
 }
 \arguments{

@@ -10,7 +10,8 @@ load_looker_data(
   region = "us-east-2",
   local_path = fs::path("data", "looker"),
   delete_s3_object = FALSE,
-  filename = NULL
+  filename = NULL,
+  col_types = NULL
 )
 }
 \arguments{
