@@ -11,7 +11,6 @@ load_looker_data <- function(
     bucket = "looker-daily",
     prefix = NULL,
     region = "us-east-2",
-    local_path = fs::path("data", "looker"),
     delete_s3_object = FALSE,
     filename = NULL,
     col_types = NULL
@@ -34,31 +33,24 @@ load_looker_data <- function(
       }
     }
 
-    # Create local directory if it doesn't exist
-    fs::dir_create(local_path)
-    # Download and load each file
-    cli::cli_alert_info("Downloading and loading files...")
+    # Load each file directly into environment
+    cli::cli_alert_info("Loading files directly from S3...")
     data <- list()
-    for (file_info in latest_files) {
-      # Generate local filename
-      local_file <- fs::path(
-        local_path,
-        paste0(file_info$look_name, "_", format(file_info$last_modified, "%Y%m%d"), ".csv")
-      )
-      # Download file
-      aws.s3::save_object(
-        object = file_info$key,
-        bucket = bucket,
-        file = local_file
-      )
 
+    for (file_info in latest_files) {
       # If no column specs provided, use character as default
       if (is.null(col_types)) {
         col_types <- readr::cols(.default = readr::col_character())
       }
 
-      # Read the CSV
-      data[[file_info$look_name]] <- vroom::vroom(local_file, col_types = col_types)
+      # Read the CSV directly from S3
+      data[[file_info$look_name]] <- aws.s3::s3read_using(
+        FUN = vroom::vroom,
+        object = file_info$key,
+        bucket = bucket,
+        col_types = col_types
+      )
+
       # Clean up S3 if requested
       if (delete_s3_object) {
         aws.s3::delete_object(
