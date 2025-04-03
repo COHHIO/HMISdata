@@ -15,6 +15,9 @@ load_looker_data <- function(
     filename = NULL,
     col_types = NULL
 ) {
+  # Start timer for the entire process
+  total_start_time <- Sys.time()
+
   tryCatch({
     # Find latest files for each Look
     cli::cli_alert_info("Finding latest Looker exports...")
@@ -38,6 +41,12 @@ load_looker_data <- function(
     data <- list()
 
     for (file_info in latest_files) {
+      # Print information about the Look being downloaded
+      cli::cli_alert("Loading Look: {.strong {file_info$look_name}}")
+
+      # Start timer for this specific file
+      look_start_time <- Sys.time()
+
       # If no column specs provided, use character as default
       if (is.null(col_types)) {
         col_types <- readr::cols(.default = readr::col_character())
@@ -51,6 +60,10 @@ load_looker_data <- function(
         col_types = col_types
       )
 
+      # Calculate and print the time taken for this Look
+      look_elapsed <- difftime(Sys.time(), look_start_time, units = "secs")
+      cli::cli_alert_success("Look {.strong {file_info$look_name}} loaded in {round(look_elapsed, 2)} seconds")
+
       # Clean up S3 if requested
       if (delete_s3_object) {
         aws.s3::delete_object(
@@ -59,6 +72,10 @@ load_looker_data <- function(
         )
       }
     }
+
+    # Calculate and print total time elapsed
+    total_elapsed <- difftime(Sys.time(), total_start_time, units = "secs")
+    cli::cli_alert_success("All data loaded successfully in {round(total_elapsed, 2)} seconds")
 
     # Return a single data frame if filename was specified, otherwise return the list
     if (!is.null(filename) && length(data) == 1) {
