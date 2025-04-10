@@ -8,7 +8,6 @@ load_looker_data(
   bucket = "looker-daily",
   prefix = NULL,
   region = "us-east-2",
-  local_path = fs::path("data", "looker"),
   delete_s3_object = FALSE,
   filename = NULL,
   col_types = NULL
@@ -21,9 +20,9 @@ load_looker_data(
 
 \item{region}{Character. AWS region (default: "us-east-2")}
 
-\item{local_path}{Character. Path where CSV files will be saved}
-
 \item{delete_s3_object}{Logical. Whether to delete the object from S3 after download}
+
+\item{local_path}{Character. Path where CSV files will be saved}
 }
 \value{
 List of data frames containing the loaded CSV data
