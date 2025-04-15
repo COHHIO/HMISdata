@@ -238,7 +238,7 @@ hmis_csv_specs <- list(
     PrisonDischarge = readr::col_integer(),
     SexOffender = readr::col_integer(),
     DisabledHoH = readr::col_integer(),
-    CurrentPregnantv = readr::col_integer(),
+    CurrentPregnant = readr::col_integer(),
     SingleParent = readr::col_integer(),
     DependentUnder6 = readr::col_integer(),
     HH5Plus = readr::col_integer(),
