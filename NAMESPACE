@@ -2,6 +2,7 @@
 
 export(hmis_csv_specs)
 export(load_hmis_csv)
+export(load_hmis_parquet)
 export(load_hud_export)
 export(load_looker_data)
 export(look_specs)
