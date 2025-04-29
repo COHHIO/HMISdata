@@ -442,7 +442,7 @@ hmis_csv_specs <- list(
     EmployerProvided = readr::col_integer(),
     NoEmployerProvidedReason = readr::col_integer(),
     COBRA = readr::col_integer(),
-    NoCOBRAReasonv = readr::col_integer(),
+    NoCOBRAReason = readr::col_integer(),
     PrivatePay = readr::col_integer(),
     NoPrivatePayReason = readr::col_integer(),
     StateHealthIns = readr::col_integer(),
