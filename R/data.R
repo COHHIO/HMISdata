@@ -14,6 +14,28 @@
 #' @source Ohio Balance of State Continuum of Care
 "Geocodes"
 
+#' Goals for COC
+#'
+#' A dataset containing the goal metrics for BoS
+#' Goals
+#'
+#' @format A data frame with 14 rows and 11 variables:
+#' \describe{
+#'   \item{SummaryMeasure}{Metric category}
+#'   \item{Measure}{Metric we are measuring}
+#'   \item{Operator}{Is this a measure that should be less or greater than}
+#'   \item{1}{Project Type 1}
+#'   \item{2}{Project Type 2}
+#'   \item{8}{Project Type 8}
+#'   \item{4}{Project Type 4}
+#'   \item{3}{Project Type 3}
+#'   \item{13}{Project Type 13}
+#'   \item{12}{Project Type 12}
+#'   \item{9}{Project Type 9}
+#' }
+#' @source Ohio Balance of State Continuum of Care
+"Goals"
+
 #' Ohio Homeless Planning Regions
 #'
 #' A dataset containing the mapping of Ohio counties to their respective
