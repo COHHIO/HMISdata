@@ -32,13 +32,19 @@ upload_hmis_data <- function(
     file_name <- paste0(file_name, extension)
   }
 
-  tryCatch({
-    # Generate local temporary filename
-    local_file <- fs::path(
-      fs::path_temp(),
-      paste0("hmis_upload_", file_name)
-    )
+  # Generate local temporary filename
+  local_file <- fs::path(
+    fs::path_temp(),
+    paste0("hmis_upload_", file_name)
+  )
 
+  on.exit({
+    if (fs::file_exists(local_file)) {
+      fs::file_delete(local_file)
+    }
+  }, add = TRUE)
+
+  tryCatch({
     # Construct the full S3 key (path)
     s3_key <- fs::path(folder, file_name)
 
@@ -67,7 +73,6 @@ upload_hmis_data <- function(
 
       if (file_exists) {
         cli::cli_alert_warning("File {file_name} already exists and overwrite=FALSE. Skipping upload.")
-        fs::file_delete(local_file)
         return(FALSE)
       }
     }
