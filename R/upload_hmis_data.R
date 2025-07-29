@@ -12,7 +12,7 @@
 upload_hmis_data <- function(
     data,
     file_name,
-    format = c("parquet", "feather", "csv"),
+    format = c("parquet", "feather", "csv", "rds"),
     bucket = "hud.csv-daily",
     folder = "hmis_output",
     region = "us-east-2",
@@ -24,7 +24,8 @@ upload_hmis_data <- function(
   extension <- switch(format,
                       "csv" = ".csv",
                       "parquet" = ".parquet",
-                      "feather" = ".feather"
+                      "feather" = ".feather",
+                      "rds" = ".rds"
   )
 
   # Add extension to file name if not already present
@@ -60,6 +61,9 @@ upload_hmis_data <- function(
            },
            "feather" = {
              arrow::write_feather(data, local_file)
+           },
+           "rds" = {
+             saveRDS(data, local_file)
            }
     )
 
