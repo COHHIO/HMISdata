@@ -7,7 +7,7 @@
 upload_hmis_data(
   data,
   file_name,
-  format = c("parquet", "feather", "csv"),
+  format = c("parquet", "feather", "csv", "rds"),
   bucket = "hud.csv-daily",
   folder = "hmis_output",
   region = "us-east-2",
