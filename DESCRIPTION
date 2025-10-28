@@ -1,10 +1,15 @@
 Package: HMISdata
-Title: What the Package Does (One Line, Title Case)
+Title: Access HMIS Data
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person(given = "Trevin",
+                    family = "Flickinger",
+                    role = "aut",
+                    email = "trevinflickinger@cohhio.org"))
+Description: Simplifies data retrieval from AWS. Provides functions to download 
+and upload Homeless Management Information System (HMIS) data. Designed to 
+streamline data workflows between cloud storage and Shiny applications, enabling
+automated data refresh for interactive dashboards and reporting tools.
 License: AGPL (>= 3)
 URL: https://github.com/trevinflick/HMISdata
 BugReports: https://github.com/trevinflick/HMISdata/issues
