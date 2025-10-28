@@ -1,0 +1,75 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# HMISdata
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+`HMISdata` simplifies data retrieval from AWS. The package provides
+functions to download and upload Homeless Management Information System
+(HMIS) data. Designed to streamline data workflows between cloud storage
+and Shiny applications, enabling automated data refresh for interactive
+dashboards and reporting tools.
+
+## Installation
+
+You can install the current version of HMISdata from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("COHHIO/HMISdata")
+```
+
+## Prerequisites
+
+This package requires AWS credentials to access S3 buckets. You can
+configure credentials using one of these methods:
+
+1.  **AWS credentials file** (`~/.aws/credentials`)
+2.  **Environment variables** (`AWS_ACCESS_KEY_ID`,
+    `AWS_SECRET_ACCESS_KEY`)
+
+See the [aws.s3 package
+documentation](https://github.com/cloudyr/aws.s3) for more details on
+authentication.
+
+## Usage
+
+### Loading HMIS CSV Files
+
+``` r
+library(HMISdata)
+
+# Load a specific HMIS CSV file from S3
+enrollment_data <- load_hmis_csv(
+  file_name = "Enrollment.csv",
+  bucket = "hud.csv-daily",
+  folder = "hmis_files",
+  region = "us-east-2"
+)
+```
+
+### Example Workflow
+
+``` r
+# Simplified typical workflow for refreshing Shiny app data
+enrollment <- load_hmis_csv("Enrollment.csv")
+exit <- load_hmis_csv("Exit.csv")
+client <- load_hmis_csv("Client.csv")
+
+# Process data for Shiny app
+# ... data processing steps here ...
+
+# Upload processed data 
+upload_hmis_data(data, file_name = "data.parquet", format = "parquet")
+```
+
+## Notes
+
+- Data files are private and require appropriate AWS permissions
+- Default bucket and region parameters is COHHIO specific HMIS data
+  storage configuration
+- Function returns a data frame ready for further processing or analysis
