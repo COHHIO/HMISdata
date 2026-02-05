@@ -107,23 +107,33 @@ find_latest_looker_files <- function(bucket, prefix = NULL, region = "us-east-2"
       region = region
     )
 
-    # Regular expression to match Looker file pattern and extract Look name
-    pattern <- "^(.+)_extras_\\d{4}-\\d{2}-\\d{2}T\\d{4}_.+\\.csv$"
+    # Updated pattern to handle both _extras_ and non-extras files
+    pattern_extras <- "^(.+)_extras_\\d{4}-\\d{2}-\\d{2}T\\d{4}_.+\\.csv$"
+    pattern_standard <- "^(.+)_\\d{4}-\\d{2}-\\d{2}T\\d{4}_.+\\.csv$"
 
     # Filter and extract file information
     file_info <- lapply(objects, function(obj) {
       filename <- basename(obj$Key)
-      if (grepl(pattern, filename)) {
-        look_name <- sub(pattern, "\\1", filename)
-        list(
-          key = obj$Key,
-          look_name = look_name,
-          last_modified = as.POSIXct(obj$LastModified, format = "%Y-%m-%dT%H:%M:%S", tz = "GMT"),
-          filename = filename
-        )
-      } else {
-        NULL
+
+      # Try extras pattern first
+      if (grepl(pattern_extras, filename)) {
+        look_name <- sub(pattern_extras, "\\1", filename)
       }
+      # Then try standard pattern
+      else if (grepl(pattern_standard, filename)) {
+        look_name <- sub(pattern_standard, "\\1", filename)
+      }
+      # No match
+      else {
+        return(NULL)
+      }
+
+      list(
+        key = obj$Key,
+        look_name = look_name,
+        last_modified = as.POSIXct(obj$LastModified, format = "%Y-%m-%dT%H:%M:%S", tz = "GMT"),
+        filename = filename
+      )
     })
 
     # Remove NULL entries (files that didn't match pattern)
