@@ -70,6 +70,18 @@ look_specs <- list(
     Name = readr::col_character(),
     Total = readr::col_integer()
   ),
+  Client_Scores_DQ_Enrollment = readr::cols(
+    UniqueID = readr::col_character(),
+    PersonalID = readr::col_character(),
+    ScoreDate = readr::col_date(),
+    Score = readr::col_integer(),
+    CustomScore = readr::col_integer(),
+    Deleted = readr::col_character(),
+    Name = readr::col_character(),
+    AssessingProgram = readr::col_character(),
+    AssessingProgramEnrollmentID = readr::col_character(),
+    Total = readr::col_integer()
+  ),
   Client_UniqueID = readr::cols(
     UniqueID = readr::col_character(),
     PersonalID = readr::col_character()
