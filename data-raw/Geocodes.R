@@ -5,7 +5,7 @@
 library(tibble)
 library(usethis)
 
-Geocodes <- tibble::tribble(
+  Geocodes <- tibble::tribble(
   ~GeographicCode, ~State,               ~Name,    ~Type,      ~County,
           "390066",   "OH",          "Alliance",   "City",      "Stark",
           "390294",   "OH",         "Barberton",   "City",     "Summit",
