@@ -78,6 +78,7 @@ look_specs <- list(
     CustomScore = readr::col_integer(),
     Deleted = readr::col_character(),
     Name = readr::col_character(),
+    AssessmentID = readr::col_character(),
     AssessingProgram = readr::col_character(),
     AssessingProgramEnrollmentID = readr::col_character(),
     Total = readr::col_integer()
